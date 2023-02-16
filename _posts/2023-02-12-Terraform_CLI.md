@@ -1,6 +1,6 @@
 ---
 Title: "Terraform CLI"
-Date: 2023-02-012
+Date: 2023-02-12
 ---
 
 <h1>Terraform CLI </h1>
