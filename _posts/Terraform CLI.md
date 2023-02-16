@@ -27,3 +27,8 @@ The `terraform graph` command is used to generate a visual representation of eit
 The `terraform output` command is used to extract the value of an output variable from the state file.
 
 The `terraform show` command is used to provide human-readable output from a state or plan file.
+
+
+<h3>Challanges faced </h3>
+
+Initially faced issue while installing terraform cli in ubuntu as my laptop was running in insecure mode(turned it off as i was facing challanges with wifi). when i turned it to secured mode, it installed perfectly fine.
