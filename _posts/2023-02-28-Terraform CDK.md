@@ -51,3 +51,64 @@ Run the following command to deploy the infrastructure
 ```
 cdk deploy
 ```
+
+Terraform CDK can be used to set up automated backup and recovery processes using S3. we can use Terraform CDK to create and configure S3 buckets for backup storage, and set up automated backup and recovery scripts using Lambda functions or other AWS services.
+
+```
+import * as aws from 'aws-cdk-lib/aws';
+import * as cdk from 'aws-cdk-lib';
+
+export class BackupStack extends cdk.Stack {
+  constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
+    super(scope, id, props);
+
+    // Create an S3 bucket for backup storage
+    const backupBucket = new aws.s3.Bucket(this, 'BackupBucket', {
+      versioned: true,
+      lifecycleRules: [
+        {
+          expiration: cdk.Duration.days(30),
+          transitions: [
+            {
+              storageClass: aws.s3.StorageClass.INFREQUENT_ACCESS,
+              transitionAfter: cdk.Duration.days(7)
+            },
+            {
+              storageClass: aws.s3.StorageClass.GLACIER,
+              transitionAfter: cdk.Duration.days(14)
+            }
+          ]
+        }
+      ]
+    });
+
+    // Create an S3 bucket policy to restrict access to the backup bucket
+    const backupBucketPolicy = new aws.s3.BucketPolicy(this, 'BackupBucketPolicy', {
+      bucket: backupBucket.bucketName,
+      policy: {
+        Version: '2012-10-17',
+        Statement: [
+          {
+            Effect: 'Deny',
+            Principal: '*',
+            Action: ['s3:*'],
+            Resource: [
+              backupBucket.arnForObjects('*')
+            ],
+            Condition: {
+              StringNotEquals: {
+                's3:x-amz-server-side-encryption': 'AES256'
+              }
+            }
+          }
+        ]
+      }
+    });
+  }
+}
+
+```
+
+<h1> Challanges faced</h1>
+
+initially faced issues while installing cdk in ubuntu as something is wrong with my package manager so i had to shift to mac.
